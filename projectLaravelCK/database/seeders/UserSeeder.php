@@ -15,15 +15,15 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Bakery Admin',
-                'email' => '1@g.com',
-                'password' => '1',
+                'email' => 'admin@bakery.com',
+                'password' => 'admin123',
                 'phone' => '0900000001',
                 'role' => 'admin',
             ],
             [
                 'name' => 'Nguyen Van An',
-                'email' => '2@g.com',
-                'password' => '2',
+                'email' => 'customer@bakery.com',
+                'password' => 'customer123',
                 'phone' => '0900000002',
                 'role' => 'user',
             ],
