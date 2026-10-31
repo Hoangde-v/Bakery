@@ -14,7 +14,7 @@ class AuthTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertRedirect('/login');
+        $response->assertOk();
     }
 
     public function test_user_can_register_account_and_redirect_to_storefront(): void
@@ -26,7 +26,7 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        $response->assertRedirect('/customer');
+        $response->assertRedirect('/customer/products');
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
             'role' => 'user',
@@ -86,7 +86,7 @@ class AuthTest extends TestCase
                 'password' => 'new-password',
                 'password_confirmation' => 'new-password',
             ])
-            ->assertRedirect('/customer');
+            ->assertRedirect('/customer/products');
 
         $user->refresh();
 

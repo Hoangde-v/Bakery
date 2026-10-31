@@ -14,10 +14,10 @@ class CategorySeeder extends Seeder
     {
         $now = now();
         $categories = [
-            ['name' => 'Banh mi', 'description' => 'Cac loai banh mi tuoi moi ra lo.'],
-            ['name' => 'Banh ngot', 'description' => 'Banh ngot dung kem va mut trai cay.'],
-            ['name' => 'Banh kem', 'description' => 'Banh kem cho tiec va dip dac biet.'],
-            ['name' => 'Banh quy', 'description' => 'Banh quy gion, phu hop dung cung tra.'],
+            ['name' => 'Bánh mì', 'description' => 'Các loại bánh mì tươi, mới ra lò mỗi ngày.'],
+            ['name' => 'Bánh ngọt', 'description' => 'Bánh ngọt dùng kem và mứt trái cây.'],
+            ['name' => 'Bánh kem', 'description' => 'Bánh kem cho tiệc và những dịp đặc biệt.'],
+            ['name' => 'Bánh quy', 'description' => 'Bánh quy giòn, phù hợp dùng cùng trà.'],
         ];
 
         foreach ($categories as $category) {

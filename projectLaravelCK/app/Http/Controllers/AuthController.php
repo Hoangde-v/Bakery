@@ -13,7 +13,11 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('products.index');
+            $user = Auth::user();
+
+            return redirect()->route(
+                $user->role === 'admin' ? 'admin.dashboard' : 'customer.products.index'
+            );
         }
 
         return view('auth.login');
@@ -32,7 +36,9 @@ class AuthController extends Controller
             $user = Auth::user();
 
             return redirect()->intended(
-                $user && $user->role === 'admin' ? route('admin.dashboard') : route('customer.dashboard')
+                $user && $user->role === 'admin'
+                    ? route('admin.dashboard')
+                    : route('customer.products.index')
             );
         }
 
@@ -44,7 +50,11 @@ class AuthController extends Controller
     public function showRegister()
     {
         if (Auth::check()) {
-            return redirect()->route('products.index');
+            return redirect()->route(
+                Auth::user()->role === 'admin'
+                    ? 'admin.dashboard'
+                    : 'customer.products.index'
+            );
         }
 
         return view('auth.register');
@@ -67,7 +77,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route($user->role === 'admin' ? 'admin.dashboard' : 'customer.dashboard');
+        return redirect()->route($user->role === 'admin' ? 'admin.dashboard' : 'customer.products.index');
     }
 
     public function logout(Request $request)
@@ -125,7 +135,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $redirectRoute = $user->role === 'admin' ? 'admin.products' : 'customer.dashboard';
+        $redirectRoute = $user->role === 'admin' ? 'admin.products.index' : 'customer.products.index';
 
         return redirect()->route($redirectRoute)->with('status', 'Mật khẩu đã được đổi thành công.');
     }

@@ -3,76 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Khách hàng</title>
+    <title>Tài khoản khách hàng - Bakery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f9f6f1; margin: 0; }
-        .container { max-width: 960px; margin: 60px auto; background: white; border-radius: 12px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-        h1 { color: #8a4b2b; }
-        .meta { margin: 16px 0; color: #555; }
-        form { margin-top: 20px; }
-        button {
-            background: #8a4b2b; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;
-        }
+        body { min-height:100vh; background:#f8f5f1; }
+        .store-navbar { background:#fff; }
+        .card { border:0; border-radius:.75rem; }
+        .btn { border-radius:.5rem; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Chào mừng, {{ Auth::user()->name }}</h1>
-        <div class="meta">Vai trò: Khách hàng</div>
-        <p>Bạn đang ở khu vực khách hàng của hệ thống Bakery. Tại đây bạn có thể xem thông tin cá nhân và đơn hàng của mình.</p>
+    <nav class="navbar store-navbar border-bottom mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-dark" href="{{ route('customer.products.index') }}">
+                <i class="bi bi-shop-window me-2 text-warning"></i>Bakery
+            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('customer.products.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-grid me-1"></i>Sản phẩm
+                </a>
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container pb-5">
+        <div class="mb-4">
+            <h1 class="h3 mb-1">Tài khoản của tôi</h1>
+            <p class="text-muted mb-0">Xin chào {{ auth()->user()->name }}.</p>
+        </div>
 
         @if (session('status'))
-            <div style="margin-top:20px; background:#eafaf1; color:#1b7f46; padding:12px 14px; border-radius:8px;">
+            <div class="alert alert-success alert-dismissible fade show">
                 {{ session('status') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if ($errors->any())
-            <div style="margin-top:20px; background:#fdecea; color:#a13b2d; padding:12px 14px; border-radius:8px;">
-                <ul style="margin:0; padding-left:18px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+            <div class="alert alert-danger">
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
                 </ul>
             </div>
         @endif
 
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit">Đăng xuất</button>
-            </form>
-
-            <form method="POST" action="{{ route('account.delete') }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Hành động này không thể hoàn tác.');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" style="background:#c0392b;">Xóa tài khoản</button>
-            </form>
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h2 class="h5 mb-0"><i class="bi bi-key me-2"></i>Đổi mật khẩu</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ route('account.changePassword') }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
+                                <input id="current_password" type="password" name="current_password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mật khẩu mới</label>
+                                <input id="password" type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label">Nhập lại mật khẩu mới</label>
+                                <input id="password_confirmation" type="password" name="password_confirmation" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h5">Xóa tài khoản</h2>
+                        <p class="text-muted small">Thao tác này không thể hoàn tác.</p>
+                        <form method="POST" action="{{ route('account.delete') }}" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Hành động này không thể hoàn tác.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash me-1"></i>Xóa tài khoản
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
-            <h2 style="color:#8a4b2b; margin-bottom:16px;">Đổi mật khẩu</h2>
-            <form method="POST" action="{{ route('account.changePassword') }}" style="max-width:420px;">
-                @csrf
-
-                <div style="margin-bottom:14px;">
-                    <label for="current_password" style="display:block; margin-bottom:6px; font-weight:bold;">Mật khẩu hiện tại</label>
-                    <input id="current_password" type="password" name="current_password" required style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;">
-                </div>
-
-                <div style="margin-bottom:14px;">
-                    <label for="password" style="display:block; margin-bottom:6px; font-weight:bold;">Mật khẩu mới</label>
-                    <input id="password" type="password" name="password" required style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;">
-                </div>
-
-                <div style="margin-bottom:18px;">
-                    <label for="password_confirmation" style="display:block; margin-bottom:6px; font-weight:bold;">Nhập lại mật khẩu mới</label>
-                    <input id="password_confirmation" type="password" name="password_confirmation" required style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;">
-                </div>
-
-                <button type="submit">Cập nhật mật khẩu</button>
-            </form>
-        </div>
-    </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
