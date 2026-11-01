@@ -62,19 +62,6 @@
                     <h1 class="display-6 fw-bold mb-2">Bánh ngon, ngày thêm vui.</h1>
                     <p class="mb-0">Chọn món bánh yêu thích, đặt hàng nhanh và nhận bánh tận nơi.</p>
                 </div>
-                <div class="col-lg-4 text-lg-end">
-                    @auth
-                        @if (auth()->user()->role === 'user')
-                            <a href="{{ route('customer.orders.index') }}" class="btn btn-light">
-                                <i class="bi bi-bag-check me-1"></i>Theo dõi đơn hàng
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('register') }}" class="btn btn-light">
-                            <i class="bi bi-person-plus me-1"></i>Tạo tài khoản
-                        </a>
-                    @endauth
-                </div>
             </div>
         </section>
 

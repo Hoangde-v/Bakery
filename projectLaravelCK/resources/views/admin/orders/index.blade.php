@@ -60,6 +60,51 @@
             </div>
         @endif
 
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="rounded-3 bg-warning-subtle text-warning-emphasis d-flex align-items-center justify-content-center"
+                             style="width:50px;height:50px">
+                            <i class="bi bi-box-seam fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-1">Tổng sản phẩm</p>
+                            <p class="h3 fw-bold mb-0">{{ $productCount }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                             style="width:50px;height:50px">
+                            <i class="bi bi-receipt fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-1">Tổng đơn hàng</p>
+                            <p class="h3 fw-bold mb-0">{{ $orderCount }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="rounded-3 bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
+                             style="width:50px;height:50px">
+                            <i class="bi bi-hourglass-split fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-1">Đơn chờ xác nhận</p>
+                            <p class="h3 fw-bold mb-0">{{ $pendingOrderCount }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @php
             $statusLabels = [
                 'pending' => 'Chờ xác nhận',

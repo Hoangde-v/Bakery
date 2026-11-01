@@ -131,6 +131,61 @@ class OrderTest extends TestCase
         $this->assertSame(5, $product->fresh()->stock_quantity);
     }
 
+    public function test_admin_statistics_are_shown_on_order_management_page(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $customer = User::factory()->create(['role' => 'user']);
+        $product = $this->createProduct();
+
+        Order::create([
+            'user_id' => $customer->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => $product->price,
+            'recipient_name' => 'Nguyen Van A',
+            'recipient_phone' => '0900000000',
+            'shipping_address' => '1 Nguyen Hue, Quan 1',
+            'status' => 'pending',
+            'payment_method' => 'cod',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertDontSee('Tổng sản phẩm')
+            ->assertDontSee('Tổng đơn hàng')
+            ->assertDontSee('Đơn chờ xác nhận');
+
+        $this->get(route('admin.orders.index'))
+            ->assertOk()
+            ->assertSee('Tổng sản phẩm')
+            ->assertSee('Tổng đơn hàng')
+            ->assertSee('Đơn chờ xác nhận')
+            ->assertSee('>1</p>', false);
+    }
+
+    public function test_order_navigation_buttons_are_not_added_to_the_main_user_and_admin_heroes(): void
+    {
+        $customer = User::factory()->create(['role' => 'user']);
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($customer)
+            ->get(route('customer.products.index'))
+            ->assertOk();
+
+        auth()->logout();
+        $this->get(route('customer.products.index'))
+            ->assertOk()
+            ->assertDontSee('Tạo tài khoản')
+            ->assertSee('Đăng ký');
+
+        $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertDontSee('Kiểm tra đơn hàng')
+            ->assertSee('Quản lý đơn hàng');
+    }
+
     private function createProduct(array $overrides = []): Product
     {
         $category = Category::create(['name' => 'Bánh test']);

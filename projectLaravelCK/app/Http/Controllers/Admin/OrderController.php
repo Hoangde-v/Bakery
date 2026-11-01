@@ -29,6 +29,9 @@ class OrderController extends Controller
         return view('admin.orders.index', [
             'orders' => $orders,
             'statuses' => self::STATUSES,
+            'productCount' => Product::count(),
+            'orderCount' => Order::count(),
+            'pendingOrderCount' => Order::where('status', 'pending')->count(),
         ]);
     }
 

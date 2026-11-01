@@ -45,47 +45,12 @@
 
     <main class="container py-4 pb-5">
         <section class="page-heading p-4 p-lg-5 mb-4 shadow-sm">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                <div>
-                    <span class="badge rounded-pill bg-white bg-opacity-25 mb-3">KHU VỰC QUẢN TRỊ</span>
-                    <h1 class="h2 fw-bold mb-2">Xin chào, {{ auth()->user()->name }}</h1>
-                    <p class="text-white-50 mb-0">Theo dõi cửa hàng và xử lý công việc hôm nay.</p>
-                </div>
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-light">
-                    <i class="bi bi-receipt me-1"></i>Kiểm tra đơn hàng
-                    @if ($pendingOrderCount)
-                        <span class="badge text-bg-danger ms-1">{{ $pendingOrderCount }}</span>
-                    @endif
-                </a>
+            <div>
+                <span class="badge rounded-pill bg-white bg-opacity-25 mb-3">KHU VỰC QUẢN TRỊ</span>
+                <h1 class="h2 fw-bold mb-2">Xin chào, {{ auth()->user()->name }}</h1>
+                <p class="text-white-50 mb-0">Theo dõi cửa hàng và xử lý công việc hôm nay.</p>
             </div>
         </section>
-
-        <div class="row g-3 mb-4">
-            <div class="col-sm-6 col-lg-4">
-                <div class="card stat-card h-100 shadow-sm">
-                    <div class="card-body d-flex align-items-center gap-3 p-4">
-                        <div class="action-icon bg-warning-subtle text-warning-emphasis"><i class="bi bi-box-seam fs-4"></i></div>
-                        <div><p class="text-muted mb-1">Tổng sản phẩm</p><p class="h3 fw-bold mb-0">{{ $productCount }}</p></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card stat-card h-100 shadow-sm">
-                    <div class="card-body d-flex align-items-center gap-3 p-4">
-                        <div class="action-icon bg-primary-subtle text-primary"><i class="bi bi-receipt fs-4"></i></div>
-                        <div><p class="text-muted mb-1">Tổng đơn hàng</p><p class="h3 fw-bold mb-0">{{ $orderCount }}</p></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card stat-card h-100 shadow-sm">
-                    <div class="card-body d-flex align-items-center gap-3 p-4">
-                        <div class="action-icon bg-danger-subtle text-danger"><i class="bi bi-hourglass-split fs-4"></i></div>
-                        <div><p class="text-muted mb-1">Đơn chờ xác nhận</p><p class="h3 fw-bold mb-0">{{ $pendingOrderCount }}</p></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         @if (session('status'))
             <div class="alert alert-success alert-dismissible fade show shadow-sm">
