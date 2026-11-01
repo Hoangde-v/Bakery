@@ -102,6 +102,20 @@
                 </a>
             </div>
             <div class="col-md-6">
+                <a href="{{ route('admin.reports.index') }}" class="card action-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="action-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-bar-chart-line fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="h5 mb-1">Thống kê và báo cáo</h2>
+                            <p class="text-muted small mb-0">Theo dõi doanh thu, đơn hàng và sản phẩm bán chạy.</p>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-secondary"></i>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-body d-flex align-items-center gap-3 p-4">
                         <div class="action-icon bg-danger-subtle text-danger">

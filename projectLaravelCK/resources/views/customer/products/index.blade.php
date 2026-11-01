@@ -68,52 +68,99 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-3">
             <div>
                 <span class="text-uppercase small fw-semibold text-secondary">Thực đơn hôm nay</span>
-                <h2 class="h3 fw-bold mb-0">Sản phẩm nổi bật</h2>
+                <h2 class="h3 fw-bold mb-0">{{ $search !== '' ? 'Kết quả tìm kiếm' : 'Sản phẩm nổi bật' }}</h2>
             </div>
             <span class="text-muted small">{{ $products->total() }} sản phẩm</span>
         </div>
 
-        <div class="row g-4">
-            @forelse ($products as $product)
-                <div class="col-sm-6 col-lg-4 col-xl-3">
-                    <article class="card product-card h-100 shadow-sm">
-                        @if($product->image)
-                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="product-image">
-                        @else
-                            <div class="product-image bg-secondary-subtle d-flex align-items-center justify-content-center text-secondary">
-                                <i class="bi bi-image fs-1"></i>
-                            </div>
-                        @endif
-                        <div class="card-body d-flex flex-column">
-                            <span class="badge text-bg-light border align-self-start mb-2">{{ $product->category->name }}</span>
-                            <h2 class="h6 fw-semibold flex-grow-1">{{ $product->name }}</h2>
-                            <div class="small text-muted mb-3">
-                                @if ($product->stock_quantity > 0)
-                                    <i class="bi bi-check-circle text-success me-1"></i>Còn hàng
-                                @else
-                                    <i class="bi bi-x-circle text-danger me-1"></i>Tạm hết hàng
-                                @endif
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <strong class="price">{{ number_format($product->price, 0, ',', '.') }} đ</strong>
-                                <a href="{{ route('customer.products.show', $product) }}" class="btn btn-sm btn-dark">
-                                    {{ $product->stock_quantity > 0 ? 'Xem & đặt mua' : 'Xem chi tiết' }}
-                                </a>
-                            </div>
+        {{-- ================= 1. FORM TÌM KIẾM ================= --}}
+    <form method="GET" action="{{ route('customer.products.index') }}" class="mb-4">
+        <label for="product-search" class="form-label fw-semibold">Tìm bánh theo tên, mô tả hoặc danh mục</label>
+        
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            
+            {{-- Ô nhập từ khóa tìm kiếm --}}
+            <input 
+                type="search" 
+                id="product-search" 
+                name="q" 
+                class="form-control" 
+                value="{{ $search }}" 
+                maxlength="100" 
+                placeholder="Ví dụ: bánh kem, croissant..."
+            >
+            
+            <button type="submit" class="btn btn-dark">Tìm kiếm</button>
+
+            {{-- Nếu người dùng đã nhập từ khóa tìm kiếm thì hiện nút "Xóa" bộ lọc --}}
+            @if (!empty($search))
+                <a href="{{ route('customer.products.index') }}" class="btn btn-outline-secondary">Xóa</a>
+            @endif
+        </div>
+    </form>
+
+    {{-- ================= 2. DANH SÁCH SẢN PHẨM ================= --}}
+    <div class="row g-4">
+        {{-- Vòng lặp duyệt qua từng sản phẩm. Nếu rỗng ($products trống) thì chạy vào @empty --}}
+        @forelse ($products as $product)
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+                <article class="card product-card h-100 shadow-sm">
+                    
+                    {{-- Hiển thị hình ảnh hoặc ảnh mặc định nếu không có --}}
+                    @if($product->image)
+                        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="product-image">
+                    @else
+                        <div class="product-image bg-secondary-subtle d-flex align-items-center justify-content-center text-secondary">
+                            <i class="bi bi-image fs-1"></i>
                         </div>
-                    </article>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="card border-0 text-center py-5">
-                        <div class="card-body">
-                            <i class="bi bi-basket display-5 text-secondary"></i>
-                            <p class="text-muted mt-3 mb-0">Hiện chưa có sản phẩm đang bán. Vui lòng quay lại sau.</p>
+                    @endif
+
+                    <div class="card-body d-flex flex-column">
+                        {{-- Tên danh mục --}}
+                        <span class="badge text-bg-light border align-self-start mb-2">{{ $product->category->name }}</span>
+                        
+                        {{-- Tên sản phẩm --}}
+                        <h2 class="h6 fw-semibold flex-grow-1">{{ $product->name }}</h2>
+                        
+                        {{-- Trạng thái tồn kho --}}
+                        <div class="small text-muted mb-3">
+                            @if ($product->stock_quantity > 0)
+                                <span class="text-success"><i class="bi bi-check-circle me-1"></i>Còn hàng</span>
+                            @else
+                                <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Tạm hết hàng</span>
+                            @endif
+                        </div>
+                        
+                        {{-- Giá tiền & Nút hành động --}}
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <strong class="price">{{ number_format($product->price, 0, ',', '.') }} đ</strong>
+                            
+                            <a href="{{ route('customer.products.show', $product) }}" class="btn btn-sm btn-dark">
+                                {{ $product->stock_quantity > 0 ? 'Xem & đặt mua' : 'Xem chi tiết' }}
+                            </a>
                         </div>
                     </div>
+                </article>
+            </div>
+        @empty
+            {{-- Phần hiển thị khi không tìm thấy sản phẩm nào --}}
+            <div class="col-12">
+                <div class="card border-0 text-center py-5">
+                    <div class="card-body">
+                        <i class="bi bi-basket display-5 text-secondary"></i>
+                        <p class="text-muted mt-3 mb-0">
+                            @if (!empty($search))
+                                Không tìm thấy loại bánh phù hợp với "{{ $search }}".
+                            @else
+                                Hiện chưa có sản phẩm đang bán. Vui lòng quay lại sau.
+                            @endif
+                        </p>
+                    </div>
                 </div>
-            @endforelse
-        </div>
+            </div>
+        @endforelse
+    </div>
 
         <div class="d-flex justify-content-center mt-4">{{ $products->links() }}</div>
     </main>

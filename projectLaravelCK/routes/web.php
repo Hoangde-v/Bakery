@@ -5,6 +5,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\ProductController as CustomerProductController;
 
@@ -57,4 +58,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.orders.index');
     Route::patch('/admin/orders/{order}', [AdminOrderController::class, 'update'])
         ->name('admin.orders.update');
+    Route::get('/admin/reports', [ReportController::class, 'index'])
+        ->name('admin.reports.index');
 });
