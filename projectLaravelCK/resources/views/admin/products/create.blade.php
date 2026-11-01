@@ -17,7 +17,7 @@
                 <div class="d-flex gap-2 justify-content-end mt-3">
                     <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Hủy</a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-1"></i>Thêm sản phẩm
+                        <i class="bi bi-plus-circle me-1"></i>Lưu sản phẩm
                     </button>
                 </div>
             </form>
