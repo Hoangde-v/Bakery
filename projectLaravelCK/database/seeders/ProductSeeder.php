@@ -44,6 +44,8 @@ class ProductSeeder extends Seeder
             ['category' => 'Bánh quy', 'name' => 'Bánh quy hạt điều bơ', 'description' => 'Hộp 250g bánh quy bơ giòn, topping hạt điều rang thơm, thích hợp làm quà.', 'price' => 75000, 'stock_quantity' => 22, 'status' => 'available'],
             ['category' => 'Bánh quy', 'name' => 'Bánh quy yến mạch nho khô', 'description' => 'Hộp 250g bánh quy yến mạch giòn nhẹ cùng nho khô tự nhiên và hương vani.', 'price' => 68000, 'stock_quantity' => 26, 'status' => 'available'],
             ['category' => 'Bánh quy', 'name' => 'Bánh quy socola chip', 'description' => 'Hộp 250g bánh quy bơ giòn với nhiều mẩu socola đen tan chảy khi thưởng thức.', 'price' => 72000, 'stock_quantity' => 24, 'status' => 'available'],
+            ['category' => 'Bánh quy', 'name' => 'Bánh quy bơ sữa', 'description' => 'Hộp 250g bánh quy bơ sữa thơm béo, giòn tan và dễ ăn.', 'price' => 65000, 'stock_quantity' => 28, 'status' => 'available'],
+            ['category' => 'Bánh quy', 'name' => 'Bánh quy matcha hạt dẻ', 'description' => 'Hộp 250g bánh quy matcha thơm nhẹ kết hợp hạt dẻ giòn, vị ngọt vừa phải.', 'price' => 78000, 'stock_quantity' => 20, 'status' => 'available'],
         ];
 
         // Dùng cùng một thời điểm cho các bản ghi được thêm hoặc cập nhật trong lần seed này.
