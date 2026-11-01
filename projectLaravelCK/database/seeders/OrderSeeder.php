@@ -12,6 +12,7 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
+        // Mỗi dòng mô tả một đơn hàng mẫu cùng thông tin người nhận và sản phẩm được đặt.
         $orders = [
             [
                 'user_email' => 'customer@bakery.com',
@@ -62,9 +63,12 @@ class OrderSeeder extends Seeder
         $now = now();
 
         foreach ($orders as $order) {
+            // Quy đổi email khách hàng sang user_id để lưu quan hệ trong bảng orders.
             $userId = DB::table('users')
                 ->where('email', $order['user_email'])
                 ->value('id');
+
+            // Quy đổi tên sản phẩm sang product_id thay vì lưu trùng chuỗi tên trong đơn hàng.
             $productId = DB::table('products')
                 ->where('name', $order['product_name'])
                 ->value('id');
@@ -73,6 +77,7 @@ class OrderSeeder extends Seeder
                 throw new \RuntimeException('Không tìm thấy người dùng hoặc sản phẩm để tạo đơn hàng mẫu.');
             }
 
+            // Số điện thoại được dùng để nhận biết và cập nhật đơn hàng mẫu khi seed lại.
             DB::table('orders')->updateOrInsert(
                 ['recipient_phone' => $order['recipient_phone']],
                 [
