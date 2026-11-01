@@ -17,6 +17,27 @@
         <div class="alert alert-danger shadow-sm">{{ $message }}</div>
     @enderror
 
+    {{-- Phần tìm kiếm sản phẩm dành cho admin --}}
+    <form method="GET" action="{{ route('admin.products.index') }}" class="mb-4">
+        <label for="admin-product-search" class="form-label fw-semibold">Tìm sản phẩm theo tên, mô tả hoặc danh mục</label>
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input
+                type="search"
+                id="admin-product-search"
+                name="q"
+                class="form-control"
+                value="{{ $search }}"
+                maxlength="100"
+                placeholder="Ví dụ: bánh kem, croissant..."
+            >
+            <button type="submit" class="btn btn-dark">Tìm kiếm</button>
+            @if ($search !== '')
+                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Xóa</a>
+            @endif
+        </div>
+    </form>
+
     <div class="card shadow-sm overflow-hidden">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <span class="fw-semibold"><i class="bi bi-box-seam me-2 text-secondary"></i>Danh sách sản phẩm</span>
@@ -82,7 +103,13 @@
                     <tr>
                         <td colspan="6" class="text-center py-5">
                             <i class="bi bi-inbox display-6 text-secondary"></i>
-                            <p class="text-muted mt-2 mb-3">Chưa có sản phẩm nào trong cửa hàng.</p>
+                            <p class="text-muted mt-2 mb-3">
+                                @if ($search !== '')
+                                    Không tìm thấy sản phẩm phù hợp với "{{ $search }}".
+                                @else
+                                    Chưa có sản phẩm nào trong cửa hàng.
+                                @endif
+                            </p>
                             <a href="{{ route('admin.products.create') }}" class="btn btn-dark btn-sm">
                                 <i class="bi bi-plus-circle me-1"></i>Thêm sản phẩm đầu tiên
                             </a>

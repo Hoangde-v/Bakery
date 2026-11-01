@@ -11,15 +11,32 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Lấy danh sách sản phẩm cùng danh mục để hiển thị và phân trang.
-        $products = Product::query()
-            ->with('category')
-            ->latest()
-            ->paginate(10);
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+        ]);
+        $search = trim($validated['q'] ?? '');
 
-        return view('admin.products.index', compact('products'));
+        $productQuery = Product::query()
+            ->with('category');
+
+        if ($search !== '') {
+            $productQuery->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $products = $productQuery
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.products.index', compact('products', 'search'));
     }
 
     public function create()
