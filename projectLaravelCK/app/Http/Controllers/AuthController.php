@@ -98,6 +98,12 @@ class AuthController extends Controller
             abort(403, 'Bạn không có quyền thực hiện thao tác này.');
         }
 
+        if ($user->orders()->exists()) {
+            return back()->withErrors([
+                'account' => 'Không thể xóa tài khoản đã có đơn hàng.',
+            ]);
+        }
+
         Auth::logout();
         $user->delete();
 

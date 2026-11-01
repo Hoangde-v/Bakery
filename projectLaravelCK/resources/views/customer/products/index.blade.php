@@ -7,12 +7,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        body { background:#f8f5f1; }
+        :root { --bakery-ink:#35251e; --bakery-brown:#75432d; --bakery-cream:#fbf7f2; }
+        body { background:var(--bakery-cream); color:var(--bakery-ink); }
         .store-navbar { background:#fff; }
-        .product-card { border:0; border-radius:.8rem; overflow:hidden; transition:.2s; }
-        .product-card:hover { transform:translateY(-4px); box-shadow:0 .75rem 1.5rem rgba(0,0,0,.08)!important; }
+        .navbar-brand { color:var(--bakery-ink)!important; }
+        .product-card { border:1px solid #eee6df; border-radius:1rem; overflow:hidden; transition:.2s; }
+        .product-card:hover { transform:translateY(-4px); box-shadow:0 1rem 2rem rgba(53,37,30,.1)!important; }
         .product-image { height:220px; object-fit:cover; width:100%; }
-        .price { color:#a9623b; }
+        .price { color:var(--bakery-brown); }
+        .store-hero { background:linear-gradient(120deg,#70412c,#b4774d); color:white; border-radius:1.25rem; overflow:hidden; }
+        .store-hero p { color:rgba(255,255,255,.78); }
+        .btn { border-radius:.65rem; }
     </style>
 </head>
 <body>
@@ -21,9 +26,20 @@
             <a class="navbar-brand fw-bold text-dark" href="{{ route('customer.products.index') }}">
                 <i class="bi bi-shop-window me-2 text-warning"></i>Bakery
             </a>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 @auth
-                    <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-secondary btn-sm">Trang cá nhân</a>
+                    @if (auth()->user()->role === 'user')
+                        <a href="{{ route('customer.orders.index') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-receipt me-1"></i>Đơn hàng
+                        </a>
+                        <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-person me-1"></i>Tài khoản
+                        </a>
+                    @elseif (auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-speedometer2 me-1"></i>Quản trị
+                        </a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger btn-sm">
@@ -39,9 +55,35 @@
     </nav>
 
     <main class="container pb-5">
-        <div class="text-center mb-4">
-            <h1 class="h2">Danh sách sản phẩm</h1>
-            <p class="text-muted mb-0">Khám phá các sản phẩm đang được bán tại Bakery.</p>
+        <section class="store-hero p-4 p-lg-5 mb-5 shadow-sm">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <span class="badge rounded-pill bg-white bg-opacity-25 mb-3">LÒ BÁNH MỖI NGÀY</span>
+                    <h1 class="display-6 fw-bold mb-2">Bánh ngon, ngày thêm vui.</h1>
+                    <p class="mb-0">Chọn món bánh yêu thích, đặt hàng nhanh và nhận bánh tận nơi.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    @auth
+                        @if (auth()->user()->role === 'user')
+                            <a href="{{ route('customer.orders.index') }}" class="btn btn-light">
+                                <i class="bi bi-bag-check me-1"></i>Theo dõi đơn hàng
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('register') }}" class="btn btn-light">
+                            <i class="bi bi-person-plus me-1"></i>Tạo tài khoản
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </section>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-3">
+            <div>
+                <span class="text-uppercase small fw-semibold text-secondary">Thực đơn hôm nay</span>
+                <h2 class="h3 fw-bold mb-0">Sản phẩm nổi bật</h2>
+            </div>
+            <span class="text-muted small">{{ $products->total() }} sản phẩm</span>
         </div>
 
         <div class="row g-4">
@@ -57,16 +99,32 @@
                         @endif
                         <div class="card-body d-flex flex-column">
                             <span class="badge text-bg-light border align-self-start mb-2">{{ $product->category->name }}</span>
-                            <h2 class="h6 flex-grow-1">{{ $product->name }}</h2>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h2 class="h6 fw-semibold flex-grow-1">{{ $product->name }}</h2>
+                            <div class="small text-muted mb-3">
+                                @if ($product->stock_quantity > 0)
+                                    <i class="bi bi-check-circle text-success me-1"></i>Còn hàng
+                                @else
+                                    <i class="bi bi-x-circle text-danger me-1"></i>Tạm hết hàng
+                                @endif
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
                                 <strong class="price">{{ number_format($product->price, 0, ',', '.') }} đ</strong>
-                                <a href="{{ route('customer.products.show', $product) }}" class="btn btn-sm btn-dark">Xem chi tiết</a>
+                                <a href="{{ route('customer.products.show', $product) }}" class="btn btn-sm btn-dark">
+                                    {{ $product->stock_quantity > 0 ? 'Xem & đặt mua' : 'Xem chi tiết' }}
+                                </a>
                             </div>
                         </div>
                     </article>
                 </div>
             @empty
-                <div class="col-12 text-center py-5 text-muted">Hiện chưa có sản phẩm đang bán.</div>
+                <div class="col-12">
+                    <div class="card border-0 text-center py-5">
+                        <div class="card-body">
+                            <i class="bi bi-basket display-5 text-secondary"></i>
+                            <p class="text-muted mt-3 mb-0">Hiện chưa có sản phẩm đang bán. Vui lòng quay lại sau.</p>
+                        </div>
+                    </div>
+                </div>
             @endforelse
         </div>
 

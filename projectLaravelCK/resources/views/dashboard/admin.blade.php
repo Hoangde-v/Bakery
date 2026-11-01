@@ -7,34 +7,84 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        body { min-height:100vh; background:#f4f6f9; }
-        .admin-navbar { background:linear-gradient(135deg,#6f3b22,#a9623b); }
-        .card { border:0; border-radius:.75rem; }
-        .action-card { transition:.2s ease; text-decoration:none; color:inherit; }
-        .action-card:hover { transform:translateY(-3px); box-shadow:0 .75rem 1.5rem rgba(0,0,0,.09)!important; color:inherit; }
-        .action-icon { width:52px; height:52px; display:flex; align-items:center; justify-content:center; border-radius:.75rem; }
-        .btn { border-radius:.5rem; }
+        :root { --bakery-ink:#35251e; --bakery-muted:#887970; --bakery-brown:#75432d; --bakery-cream:#fbf7f2; }
+        body { min-height:100vh; background:var(--bakery-cream); color:var(--bakery-ink); }
+        .admin-navbar { background:#fff; }
+        .navbar-brand { color:var(--bakery-ink)!important; }
+        .navbar-brand i { color:#b87346; }
+        .card { border:1px solid #eee6df; border-radius:1rem; }
+        .stat-card, .action-card { transition:transform .18s ease, box-shadow .18s ease; }
+        .action-card { text-decoration:none; color:inherit; }
+        .action-card:hover { transform:translateY(-3px); box-shadow:0 .75rem 1.5rem rgba(53,37,30,.09)!important; color:inherit; }
+        .action-icon { width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:.85rem; }
+        .btn { border-radius:.65rem; }
+        .page-heading { background:linear-gradient(125deg,#70412c,#a96842); color:#fff; border-radius:1.15rem; }
+        .page-heading .text-white-50 { color:rgba(255,255,255,.72)!important; }
+        @media (max-width:575.98px) { .page-heading { padding:1.4rem!important; } }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark admin-navbar shadow-sm">
+    <nav class="navbar admin-navbar border-bottom shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ route('admin.dashboard') }}">
                 <i class="bi bi-shop-window me-2"></i>Bakery Admin
             </a>
-            <form method="POST" action="{{ route('logout') }}" class="m-0">
-                @csrf
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
-                </button>
-            </form>
+            <div class="d-flex gap-2">
+                <a href="{{ route('customer.products.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-eye me-1"></i>Xem cửa hàng
+                </a>
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
     <main class="container py-4 pb-5">
-        <div class="mb-4">
-            <h1 class="h3 mb-1">Bảng điều khiển</h1>
-            <p class="text-muted mb-0">Xin chào, {{ auth()->user()->name }}. Chọn chức năng bạn muốn quản lý.</p>
+        <section class="page-heading p-4 p-lg-5 mb-4 shadow-sm">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <span class="badge rounded-pill bg-white bg-opacity-25 mb-3">KHU VỰC QUẢN TRỊ</span>
+                    <h1 class="h2 fw-bold mb-2">Xin chào, {{ auth()->user()->name }}</h1>
+                    <p class="text-white-50 mb-0">Theo dõi cửa hàng và xử lý công việc hôm nay.</p>
+                </div>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-light">
+                    <i class="bi bi-receipt me-1"></i>Kiểm tra đơn hàng
+                    @if ($pendingOrderCount)
+                        <span class="badge text-bg-danger ms-1">{{ $pendingOrderCount }}</span>
+                    @endif
+                </a>
+            </div>
+        </section>
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-4">
+                <div class="card stat-card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="action-icon bg-warning-subtle text-warning-emphasis"><i class="bi bi-box-seam fs-4"></i></div>
+                        <div><p class="text-muted mb-1">Tổng sản phẩm</p><p class="h3 fw-bold mb-0">{{ $productCount }}</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card stat-card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="action-icon bg-primary-subtle text-primary"><i class="bi bi-receipt fs-4"></i></div>
+                        <div><p class="text-muted mb-1">Tổng đơn hàng</p><p class="h3 fw-bold mb-0">{{ $orderCount }}</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card stat-card h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="action-icon bg-danger-subtle text-danger"><i class="bi bi-hourglass-split fs-4"></i></div>
+                        <div><p class="text-muted mb-1">Đơn chờ xác nhận</p><p class="h3 fw-bold mb-0">{{ $pendingOrderCount }}</p></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         @if (session('status'))
@@ -47,12 +97,15 @@
         @if ($errors->any())
             <div class="alert alert-danger shadow-sm">
                 <ul class="mb-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
                 </ul>
             </div>
         @endif
+
+        <div class="mb-3">
+            <h2 class="h5 fw-bold mb-1">Công việc quản lý</h2>
+            <p class="text-muted mb-0">Chọn khu vực bạn muốn thao tác.</p>
+        </div>
 
         <div class="row g-3 mb-4">
             <div class="col-md-6">
@@ -70,6 +123,20 @@
                 </a>
             </div>
             <div class="col-md-6">
+                <a href="{{ route('admin.orders.index') }}" class="card action-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center gap-3 p-4">
+                        <div class="action-icon bg-success-subtle text-success">
+                            <i class="bi bi-receipt fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="h5 mb-1">Quản lý đơn hàng</h2>
+                            <p class="text-muted small mb-0">Xem đơn và cập nhật trạng thái giao hàng.</p>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-secondary"></i>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-body d-flex align-items-center gap-3 p-4">
                         <div class="action-icon bg-danger-subtle text-danger">
@@ -77,7 +144,7 @@
                         </div>
                         <div>
                             <h2 class="h5 mb-1">Tài khoản quản trị</h2>
-                            <p class="text-muted small mb-1">Vai trò: Quản trị viên</p>
+                            <p class="text-muted small mb-2">Xóa tài khoản sẽ không thể hoàn tác.</p>
                             <form method="POST" action="{{ route('account.delete') }}" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản quản trị này không?');">
                                 @csrf
                                 @method('DELETE')
@@ -93,7 +160,8 @@
 
         <div class="card shadow-sm">
             <div class="card-header bg-white py-3">
-                <h2 class="h5 mb-0"><i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu</h2>
+                <h2 class="h5 mb-1"><i class="bi bi-shield-lock me-2"></i>Bảo mật tài khoản</h2>
+                <p class="text-muted small mb-0">Đổi mật khẩu định kỳ để bảo vệ quyền quản trị.</p>
             </div>
             <div class="card-body p-4">
                 <form method="POST" action="{{ route('account.changePassword') }}" class="row g-3">

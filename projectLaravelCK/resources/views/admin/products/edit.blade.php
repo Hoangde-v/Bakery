@@ -7,7 +7,9 @@
     </a>
     <div class="card shadow-sm">
         <div class="card-header bg-white py-3">
-            <h1 class="h4 mb-0">Sửa sản phẩm: {{ $product->name }}</h1>
+            <span class="text-uppercase small fw-semibold text-secondary">Cập nhật danh mục cửa hàng</span>
+            <h1 class="h4 fw-bold mb-1">Sửa sản phẩm</h1>
+            <p class="text-muted small mb-0">{{ $product->name }}</p>
         </div>
         <div class="card-body p-4">
             <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
